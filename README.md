@@ -1,73 +1,47 @@
 # Minishell
 
-A simple shell implementation inspired by Bash, recreating essential shell functionality from scratch.
+A Unix shell implementation built from scratch in C, recreating core Bash functionality including pipes, redirections, and process management.
 
-## About
+**Team project at Hive Helsinki (42 School)** – forked from the original team repository.
 
-This project recreates a basic Unix shell with essential features including command execution, pipes, redirections, and environment variable handling. This is a team project from the 42 School curriculum that serves as an introduction to process management, system programming, and Unix system calls.
+## Team Contributions
 
-## Features
+This was a pair programming project with clear role division.
 
-### Core Functionality
-- Interactive command prompt with working history
-- Executable search using PATH variable
-- Support for relative and absolute paths
-- Quote handling (single `'` and double `"`)
-- Environment variable expansion (`$VAR`, `$?`)
-- Signal handling (ctrl-C, ctrl-D, ctrl-\)
+### My Work (Execution Layer)
 
-### Redirections
-- `<` - Input redirection
-- `>` - Output redirection
-- `<<` - Here document (delimiter-based input)
-- `>>` - Output redirection in append mode
+* **Command execution logic** – Designed and implemented the full execution flow, from single commands to complex pipelines
+* **Built-in commands** – `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`
+* **Pipes** – Multi-command pipeline execution with correct file descriptor handling
+* **Redirections** – Full support for `<`, `>`, `<<`, `>>`
+* **Process management** – Child process creation, waiting for child processes and capturing exit codes, and graceful cleanup
+* **Environment variables** – Variable storage, updates, and passing to child processes
+* **Signal handling** – Interactive mode behavior (`ctrl-C`, `ctrl-D`, `ctrl-\`)
+* **Exit status tracking (`$?`)** – Capture and expose the exit code of the last executed command
 
-### Advanced Features
-- Pipes (`|`) - Connect command outputs to inputs
-- `$?` - Exit status of last command
-- Proper signal handling in interactive mode
+### My Partner's Work (Parsing Layer)
 
-### Built-in Commands
-- `echo` with `-n` option
-- `cd` with relative or absolute path
-- `pwd` - Print working directory
-- `export` - Set environment variables
-- `unset` - Remove environment variables
-- `env` - Display environment
-- `exit` - Exit the shell
+* Parsing and tokenization
+* Quote handling (single and double quotes)
+* Environment variable expansion (`$VAR`, `$?`)
+* Input validation and syntax checks
 
-## Signal Handling
+## Implementation Strategy
 
-### Interactive Mode
+I approached the execution design incrementally to control complexity:
 
-| Signal | Key Combination | Behavior |
-|--------|----------------|----------|
-| SIGINT | `ctrl-C` | Display new prompt on new line |
-| EOF | `ctrl-D` | Exit the shell |
-| SIGQUIT | `ctrl-\` | Do nothing (ignored) |
+1. **Single-command execution** – Implemented full support for redirections, here-docs, file I/O, error handling
+2. **Pipeline execution** – Extended the same execution logic to support multiple commands connected by pipes
 
-## Quote Handling
+**Result:** A scalable execution architecture that remains understandable and reliably executes pipelines of 100+ commands within system limits, demonstrating robustness under stress testing.
 
-### Single Quotes (`'`)
-Prevent interpretation of all metacharacters:
-```bash
-minishell$ echo '$USER is $HOME'
-$USER is $HOME
-```
-
-### Double Quotes (`"`)
-Prevent interpretation of metacharacters except `$`:
-```bash
-minishell$ echo "$USER is at $HOME"
-username is at /home/username
-```
+This staged approach made debugging easier and prevented the system from becoming fragile as features were added.
 
 ## Requirements
 
 - C compiler (gcc/clang)
 
 ## Installation
-
 ```bash
 git clone https://github.com/KozhInna/42_minishell.git minishell
 cd minishell
@@ -75,7 +49,6 @@ make
 ```
 
 ## Usage
-
 ```bash
 ./minishell
 ```
@@ -88,26 +61,6 @@ minishell$ cat < input.txt > output.txt
 minishell$ exit
 ```
 
-## Technical Implementation
-
-### Key Concepts
-
-**Process Management:**
-- `fork()` - Create child processes
-- `execve()` - Execute commands
-- `wait()` - Wait for child processes
-
-**Pipes:**
-- `pipe()` - Create pipe file descriptors
-- `dup2()` - Duplicate file descriptors
-
-**Signals:**
-- `signal()` - Set up signal handlers
-- Global variable for signal indication
-
-**File Descriptors:**
-- Input/output redirection using `open()`, `close()`, `dup2()`
-
 ---
 
-*42 School Project - 2025*
+*42 School Team Project – 2025*  
