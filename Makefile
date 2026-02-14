@@ -9,8 +9,11 @@ COLOUR_BRIGHT_BLUE = \033[1;34m
 COLOUR_BRIGHT_MAGENTA = \033[1;35m
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I./includes/
-READLINE = -lreadline
+# CFLAGS = -Wall -Wextra -Werror -I./includes/
+# READLINE = -lreadline
+READLINE_DIR = $(shell brew --prefix readline)
+CFLAGS = -Wall -Wextra -Werror -I./includes/ -I$(READLINE_DIR)/include
+READLINE = -L$(READLINE_DIR)/lib -lreadline
 
 SRCS_PATH = src
 OBJS_PATH = obj
