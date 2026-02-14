@@ -11,6 +11,8 @@ COLOUR_BRIGHT_MAGENTA = \033[1;35m
 CC = cc
 # CFLAGS = -Wall -Wextra -Werror -I./includes/
 # READLINE = -lreadline
+
+# Update CFLAGS and READLINE paths to use Homebrew readline on macOS
 READLINE_DIR = $(shell brew --prefix readline)
 CFLAGS = -Wall -Wextra -Werror -I./includes/ -I$(READLINE_DIR)/include
 READLINE = -L$(READLINE_DIR)/lib -lreadline
