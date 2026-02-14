@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mzhivoto <mzhivoto@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: ikozhina <ikozhina@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 01:08:08 by mzhivoto          #+#    #+#             */
-/*   Updated: 2025/07/15 01:09:55 by mzhivoto         ###   ########.fr       */
+/*   Updated: 2026/02/14 14:56:04 by ikozhina         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,71 +14,31 @@
 
 int	read_prompt(t_cmd_input *cmd, t_data *data)
 {
-	// cmd->input = readline("minishell$ ");
-	// if (g_sig_received)
-	// {
-	// 	g_sig_received = 0;
-	// 	data->status = ERR_INTERUPTED_SIGINT;
-	// 	if (cmd->input)
-	// 	{
-	// 		free(cmd->input);
-	// 		cmd->input = NULL;
-	// 	}
-	// 	return (-2);
-	// }
-	// if (!cmd->input)
-	// {
-	// 	printf("exit\n");
-	// 	return (-1);
-	// }
-	// if (cmd->input[0] == '\0')
-	// {
-	// 	data->status = 0;
-	// 	free(cmd->input);
-	// 	cmd->input = NULL;
-	// 	return (0);
-	// }
-	// return (1);
-	///////////////////////////////////////////////////////
-	// PART FOR BIG TESTER, COMMENT IT IF DON'T NEED
-	char *line;
-	if (isatty(STDIN_FILENO))
-	{
-		line = readline("minishell$ ");
-	}
-	else
-	{
-		line = get_next_line(STDIN_FILENO);
-		if (line)
-		{
-			size_t len = ft_strlen(line);
-			if (len > 0 && line[len - 1] == '\n')
-				line[len - 1] = '\0';
-		}
-	}
-	if (!line)
-	{
-		if (isatty(STDIN_FILENO))
-			printf("exit\n");
-		return (-1);
-	}
+	cmd->input = readline("minishell$ ");
 	if (g_sig_received)
 	{
-		free(line);
-		cmd->input = NULL;
+		g_sig_received = 0;
+		data->status = ERR_INTERUPTED_SIGINT;
+		if (cmd->input)
+		{
+			free(cmd->input);
+			cmd->input = NULL;
+		}
 		return (-2);
 	}
-	if (line[0] == '\0')
+	if (!cmd->input)
+	{
+		printf("exit\n");
+		return (-1);
+	}
+	if (cmd->input[0] == '\0')
 	{
 		data->status = 0;
-		free(line);
+		free(cmd->input);
 		cmd->input = NULL;
 		return (0);
 	}
-	cmd->input = line;
 	return (1);
-	// 	//END OF PART FOR BIG TESTER
-	// 	///////////////////////////////////////////////////////////
 }
 
 void	shell_loop(t_data *data, t_command **commands)
@@ -121,7 +81,7 @@ int	main(int ac, char **av, char **env)
 		return (1);
 	}
 	set_prompt_signals();
-	rl_event_hook = rl_signal_handler;
+    rl_event_hook = rl_signal_handler;
 	shell_loop(&data, &commands);
 	cleanup_data(&data);
 	return (data.status);
